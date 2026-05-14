@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "323018739264",
+    "project_id": "android-asistencia-qr",
+    "storage_bucket": "android-asistencia-qr.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:323018739264:android:bc0242749e0416ed72d9a5",
+        "android_client_info": {
+          "package_name": "com.curso.asistenciaqr"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9V3R1Z4iBNqgRiMVeYHI6dNK3nZfFDUI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

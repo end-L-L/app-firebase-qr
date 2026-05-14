@@ -1,5 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Paleta principal (del HTML) -->
+    <color name="cyan">#00D4FF</color>
+    <color name="purple">#7C3AED</color>
+    <color name="green">#10B981</color>
+    <color name="amber">#F59E0B</color>
+    <color name="red">#EF4444</color>
+
+    <!-- Fondos oscuros -->
+    <color name="dark_bg">#0A0E1A</color>
+    <color name="dark_surface">#111827</color>
+    <color name="dark_surface2">#1A2235</color>
+    <color name="dark_border">#1E2D45</color>
+    <color name="dark_card">#1A2235</color>
+
+    <!-- Fondos claros -->
+    <color name="light_bg">#F1F5F9</color>
+    <color name="light_surface">#FFFFFF</color>
+    <color name="light_surface2">#F8FAFC</color>
+    <color name="light_border">#E2E8F0</color>
+    <color name="light_card">#FFFFFF</color>
+
+    <!-- Texto -->
+    <color name="text_primary_dark">#E2E8F0</color>
+    <color name="text_secondary_dark">#94A3B8</color>
+    <color name="text_primary_light">#0F172A</color>
+    <color name="text_secondary_light">#64748B</color>
 </resources>
