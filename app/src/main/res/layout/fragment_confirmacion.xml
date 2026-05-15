@@ -1,14 +1,64 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.alumno.ConfirmacionFragment">
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="32dp"
+    android:background="?attr/colorSurface">
 
-    <!-- TODO: Update blank fragment layout -->
+    <!-- Ícono resultado -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_resultado"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="50dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:strokeWidth="2dp"
+        app:strokeColor="@color/green">
+        <ImageView
+            android:id="@+id/img_resultado"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@android:drawable/ic_menu_agenda"
+            android:padding="24dp"
+            android:scaleType="centerInside"
+            android:tint="@color/green" />
+    </com.google.android.material.card.MaterialCardView>
+
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:id="@+id/tv_titulo_resultado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="¡Asistencia registrada!"
+        android:textColor="@color/green"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
 
-</FrameLayout>
+    <TextView
+        android:id="@+id/tv_mensaje_resultado"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tu asistencia fue registrada exitosamente."
+        android:textColor="?attr/colorOnSurfaceVariant"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:lineSpacingMultiplier="1.5"
+        android:layout_marginBottom="40dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_volver"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Volver al inicio"
+        android:paddingTop="12dp"
+        android:paddingBottom="12dp"
+        app:backgroundTint="?attr/colorPrimary"
+        android:textColor="?attr/colorOnPrimary" />
+
+</LinearLayout>
