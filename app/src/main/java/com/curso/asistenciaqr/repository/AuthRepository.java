@@ -1,5 +1,7 @@
 package com.curso.asistenciaqr.repository;
 
+import android.content.Context;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -107,5 +109,18 @@ public class AuthRepository {
 
     public interface OnRolListener {
         void onRol(String rol, String nombre);
+    }
+
+    public boolean hayConexion(Context context) {
+        android.net.ConnectivityManager cm = (android.net.ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (cm == null) return false;
+        android.net.Network network = cm.getActiveNetwork();
+        if (network == null) return false;
+        android.net.NetworkCapabilities caps = cm.getNetworkCapabilities(network);
+        return caps != null && (
+                caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_WIFI) ||
+                        caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_CELLULAR) ||
+                        caps.hasTransport(android.net.NetworkCapabilities.TRANSPORT_ETHERNET));
     }
 }

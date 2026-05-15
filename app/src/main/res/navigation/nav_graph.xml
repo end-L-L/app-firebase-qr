@@ -10,7 +10,22 @@
         android:id="@+id/loginFragment"
         android:name="com.curso.asistenciaqr.fragments.shared.LoginFragment"
         android:label="Acceso"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+
+        <action
+            android:id="@+id/action_login_to_registro"
+            app:destination="@id/registroFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/registroFragment"
+        android:name="com.curso.asistenciaqr.fragments.shared.RegistroFragment"
+        android:label="Crear Cuenta" />
 
     <fragment
         android:id="@+id/ajustesFragment"

@@ -11,7 +11,13 @@ public class WelcomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new PreferenciasRepository(this).aplicarTema();
+        String tema = new PreferenciasRepository(this).obtenerTema();
+        if ("light".equals(tema)) {
+            setTheme(R.style.Theme_AsistenciaQR_Light);
+        } else {
+            setTheme(R.style.Theme_AsistenciaQR_Dark);
+        }
+
         setContentView(R.layout.activity_welcome);
 
         findViewById(R.id.btn_entrar).setOnClickListener(v -> {

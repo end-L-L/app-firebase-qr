@@ -40,11 +40,24 @@ public class LoginFragment extends Fragment {
 
         authRepository = new AuthRepository();
 
-        // Si hay sesión activa → verificar rol y redirigir
+        // si hay sesión activa → verificar rol y redirigir
         if (authRepository.haySesionActiva()) {
             authRepository.obtenerRolActual((rol, nombre) -> {
                 if (!isAdded() || getView() == null) return;
                 redirigirPorRol(view, rol, nombre);
+
+                if (getActivity() instanceof MainActivity) {
+                    ((MainActivity) getActivity()).configurarMenuPorRol(rol);
+                }
+
+                // navegar sin popUpTo para no depender del backstack
+                if ("maestro".equals(rol)) {
+                    Navigation.findNavController(requireView())
+                            .navigate(R.id.dashboardMaestroFragment);
+                } else {
+                    Navigation.findNavController(requireView())
+                            .navigate(R.id.dashboardAlumnoFragment);
+                }
             });
             return;
         }
@@ -58,20 +71,29 @@ public class LoginFragment extends Fragment {
         btnRolAlumno   = view.findViewById(R.id.btn_rol_alumno);
         progressBar    = view.findViewById(R.id.progress_bar);
 
-        // Selector de rol
+        // selector de rol
         seleccionarRol("alumno", view);
         btnRolMaestro.setOnClickListener(v -> seleccionarRol("maestro", view));
         btnRolAlumno.setOnClickListener(v  -> seleccionarRol("alumno",  view));
+
+        // Link → Registro
+        view.findViewById(R.id.tv_crear_cuenta).setOnClickListener(v ->
+                Navigation.findNavController(v)
+                        .navigate(R.id.action_login_to_registro));
 
         // TextWatchers para limpiar errores
         etEmail.addTextChangedListener(simpleWatcher(() -> tilEmail.setError(null)));
         etContrasena.addTextChangedListener(simpleWatcher(() -> tilContrasena.setError(null)));
 
-        // Login con tecla Done
+        // login con tecla Done
         etContrasena.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                if (!authRepository.hayConexion(requireContext())) {
+                    Snackbar.make(view, "Sin conexión a internet", Snackbar.LENGTH_LONG).show();
+                    return false;
+                }
                 intentarLogin(view);
-                return true;
+
             }
             return false;
         });
