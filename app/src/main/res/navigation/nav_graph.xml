@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
     app:startDestination="@id/loginFragment">
 
@@ -8,18 +9,21 @@
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.curso.asistenciaqr.fragments.shared.LoginFragment"
-        android:label="Acceso" />
+        android:label="Acceso"
+        tools:layout="@layout/fragment_login" />
 
     <fragment
         android:id="@+id/ajustesFragment"
         android:name="com.curso.asistenciaqr.fragments.shared.AjustesFragment"
-        android:label="Ajustes" />
+        android:label="Ajustes"
+        tools:layout="@layout/fragment_ajustes" />
 
     <!-- ── MAESTRO ── -->
     <fragment
         android:id="@+id/dashboardMaestroFragment"
         android:name="com.curso.asistenciaqr.fragments.maestro.DashboardMaestroFragment"
-        android:label="Dashboard">
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard_maestro" >
         <action
             android:id="@+id/action_dashboard_maestro_to_crear_sesion"
             app:destination="@id/crearSesionFragment" />
@@ -31,7 +35,8 @@
     <fragment
         android:id="@+id/crearSesionFragment"
         android:name="com.curso.asistenciaqr.fragments.maestro.CrearSesionFragment"
-        android:label="Nueva Sesión">
+        android:label="Nueva Sesión"
+        tools:layout="@layout/fragment_crear_sesion" >
         <action
             android:id="@+id/action_crear_sesion_to_qr"
             app:destination="@id/qrDisplayFragment" />
@@ -40,7 +45,8 @@
     <fragment
         android:id="@+id/qrDisplayFragment"
         android:name="com.curso.asistenciaqr.fragments.maestro.QrDisplayFragment"
-        android:label="Código QR">
+        android:label="Código QR"
+        tools:layout="@layout/fragment_qr_display" >
         <argument
             android:name="sesionId"
             app:argType="string" />
@@ -55,7 +61,8 @@
     <fragment
         android:id="@+id/listaAsistenciaFragment"
         android:name="com.curso.asistenciaqr.fragments.maestro.ListaAsistenciaFragment"
-        android:label="Asistencia">
+        android:label="Asistencia"
+        tools:layout="@layout/fragment_lista_asistencia" >
         <argument
             android:name="sesionId"
             app:argType="string" />
@@ -65,7 +72,8 @@
     <fragment
         android:id="@+id/dashboardAlumnoFragment"
         android:name="com.curso.asistenciaqr.fragments.alumno.DashboardAlumnoFragment"
-        android:label="Dashboard">
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard_alumno" >
         <action
             android:id="@+id/action_dashboard_alumno_to_scanner"
             app:destination="@id/scannerQrFragment" />
@@ -77,12 +85,14 @@
     <fragment
         android:id="@+id/scannerQrFragment"
         android:name="com.curso.asistenciaqr.fragments.alumno.ScannerQrFragment"
-        android:label="Escanear QR" />
+        android:label="Escanear QR"
+        tools:layout="@layout/fragment_scanner_qr" />
 
     <fragment
         android:id="@+id/confirmacionFragment"
         android:name="com.curso.asistenciaqr.fragments.alumno.ConfirmacionFragment"
-        android:label="Confirmación">
+        android:label="Confirmación"
+        tools:layout="@layout/fragment_confirmacion" >
         <argument
             android:name="exito"
             app:argType="boolean" />
