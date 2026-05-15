@@ -15,22 +15,20 @@ import com.curso.asistenciaqr.repository.PreferenciasRepository;
 
 public class MainActivity extends AppCompatActivity {
 
-    private DrawerLayout drawerLayout;
-    private NavController navController;
+    private DrawerLayout   drawerLayout;
+    private NavController  navController;
     private NavigationView navView;
+    private MaterialToolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        // Aplicar tema guardado antes de inflar
         new PreferenciasRepository(this).aplicarTema();
-
         setContentView(R.layout.activity_main);
 
-        MaterialToolbar toolbar = findViewById(R.id.toolbar);
+        toolbar      = findViewById(R.id.toolbar);
         drawerLayout = findViewById(R.id.drawer_layout);
-        navView = findViewById(R.id.nav_view);
+        navView      = findViewById(R.id.nav_view);
 
         setSupportActionBar(toolbar);
 
@@ -39,25 +37,35 @@ public class MainActivity extends AppCompatActivity {
         assert navHostFragment != null;
         navController = navHostFragment.getNavController();
 
-        // Pantallas top-level por rol — muestran ☰ en lugar de ←
-        AppBarConfiguration appBarConfig = new AppBarConfiguration.Builder(
-                R.id.dashboardMaestroFragment,
-                R.id.dashboardAlumnoFragment,
-                R.id.loginFragment)
+        // Inicialmente bloquear drawer (estamos en Login)
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        toolbar.setVisibility(View.GONE);
+
+        // 1. Crear una configuración base (puedes incluir los destinos principales aquí)
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(
+                R.id.dashboardMaestroFragment, R.id.dashboardAlumnoFragment)
                 .setOpenableLayout(drawerLayout)
                 .build();
 
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
-        NavigationUI.setupWithNavController(navView, navController);
+        // 2. Vincular Toolbar con NavController
+        NavigationUI.setupWithNavController(toolbar, navController, appBarConfiguration);
 
-        // Control de visibilidad del Drawer según destino
         navController.addOnDestinationChangedListener((ctrl, dest, args) -> {
             int id = dest.getId();
+
             if (id == R.id.loginFragment) {
-                // Login: sin drawer
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
                 toolbar.setVisibility(View.GONE);
-            } else {
+
+            } else if (id == R.id.dashboardMaestroFragment ||
+                    id == R.id.dashboardAlumnoFragment  ||
+                    id == R.id.crearSesionFragment      ||
+                    id == R.id.qrDisplayFragment        ||
+                    id == R.id.listaAsistenciaFragment  ||
+                    id == R.id.scannerQrFragment        ||
+                    id == R.id.confirmacionFragment     ||
+                    id == R.id.ajustesFragment) {
+
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
                 toolbar.setVisibility(View.VISIBLE);
             }
@@ -66,19 +74,38 @@ public class MainActivity extends AppCompatActivity {
 
     // Llamado desde LoginFragment tras verificar el rol
     public void configurarMenuPorRol(String rol) {
+        navView.getMenu().clear();
+
         if ("maestro".equals(rol)) {
-            navView.getMenu().clear();
             navView.inflateMenu(R.menu.menu_drawer_maestro);
         } else {
-            navView.getMenu().clear();
             navView.inflateMenu(R.menu.menu_drawer_alumno);
         }
+
+        // Definir top-level destinations según el rol
+        AppBarConfiguration appBarConfig;
+        if ("maestro".equals(rol)) {
+            appBarConfig = new AppBarConfiguration.Builder(
+                    R.id.dashboardMaestroFragment,
+                    R.id.ajustesFragment)
+                    .setOpenableLayout(drawerLayout)
+                    .build();
+        } else {
+            appBarConfig = new AppBarConfiguration.Builder(
+                    R.id.dashboardAlumnoFragment,
+                    R.id.ajustesFragment)
+                    .setOpenableLayout(drawerLayout)
+                    .build();
+        }
+
+        // ✅ Reconectar ambos con el NavController
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfig);
         NavigationUI.setupWithNavController(navView, navController);
     }
 
     @Override
     public boolean onSupportNavigateUp() {
-        return NavigationUI.navigateUp(navController, drawerLayout)
-                || super.onSupportNavigateUp();
+        // Esto permite que el NavController maneje el clic en el icono de la hamburguesa/atrás
+        return NavigationUI.navigateUp(navController, drawerLayout) || super.onSupportNavigateUp();
     }
 }

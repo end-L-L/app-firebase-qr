@@ -52,7 +52,6 @@
                     android:layout_width="40dp"
                     android:layout_height="40dp"
                     android:src="@android:drawable/ic_input_add"
-                    android:tint="?attr/colorPrimary"
                     android:layout_marginEnd="16dp" />
                 <LinearLayout
                     android:layout_width="0dp"
@@ -76,8 +75,7 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:src="@android:drawable/arrow_up_float"
-                    android:tint="?attr/colorOnSurfaceVariant" />
+                    android:src="@android:drawable/arrow_up_float" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
@@ -134,8 +132,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gap="8dp">
+                    android:orientation="horizontal">
+<!--                    android:gap="8dp">-->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btn_ver_qr"
                         android:layout_width="0dp"
