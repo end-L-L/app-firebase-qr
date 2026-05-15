@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.AsistenciaQR" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.AsistenciaQR.Light" parent="Theme.Material3.Light.NoActionBar">
         <item name="colorPrimary">@color/purple</item>
         <item name="colorOnPrimary">@color/light_surface</item>
         <item name="colorSecondary">@color/cyan</item>

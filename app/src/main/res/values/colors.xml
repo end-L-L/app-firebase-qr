@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Paleta principal (del HTML) -->
+    <!-- Paleta principal -->
     <color name="cyan">#00D4FF</color>
     <color name="purple">#7C3AED</color>
     <color name="green">#10B981</color>

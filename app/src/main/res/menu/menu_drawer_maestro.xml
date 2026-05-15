@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/dashboardMaestroFragment"
+        android:icon="@android:drawable/ic_menu_today"
+        android:title="Dashboard" />
+
+    <item
+        android:id="@+id/crearSesionFragment"
+        android:icon="@android:drawable/ic_input_add"
+        android:title="Nueva Sesión" />
+
+    <item
+        android:id="@+id/ajustesFragment"
+        android:icon="@android:drawable/ic_menu_preferences"
+        android:title="Ajustes" />
+
+</menu>

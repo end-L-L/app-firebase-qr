@@ -1,6 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/nav_graph">
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/loginFragment">
+
+    <!-- ── SHARED ── -->
+    <fragment
+        android:id="@+id/loginFragment"
+        android:name="com.curso.asistenciaqr.fragments.shared.LoginFragment"
+        android:label="Acceso" />
+
+    <fragment
+        android:id="@+id/ajustesFragment"
+        android:name="com.curso.asistenciaqr.fragments.shared.AjustesFragment"
+        android:label="Ajustes" />
+
+    <!-- ── MAESTRO ── -->
+    <fragment
+        android:id="@+id/dashboardMaestroFragment"
+        android:name="com.curso.asistenciaqr.fragments.maestro.DashboardMaestroFragment"
+        android:label="Dashboard">
+        <action
+            android:id="@+id/action_dashboard_maestro_to_crear_sesion"
+            app:destination="@id/crearSesionFragment" />
+        <action
+            android:id="@+id/action_dashboard_maestro_to_ajustes"
+            app:destination="@id/ajustesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/crearSesionFragment"
+        android:name="com.curso.asistenciaqr.fragments.maestro.CrearSesionFragment"
+        android:label="Nueva Sesión">
+        <action
+            android:id="@+id/action_crear_sesion_to_qr"
+            app:destination="@id/qrDisplayFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/qrDisplayFragment"
+        android:name="com.curso.asistenciaqr.fragments.maestro.QrDisplayFragment"
+        android:label="Código QR">
+        <argument
+            android:name="sesionId"
+            app:argType="string" />
+        <argument
+            android:name="token"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_qr_to_lista_asistencia"
+            app:destination="@id/listaAsistenciaFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/listaAsistenciaFragment"
+        android:name="com.curso.asistenciaqr.fragments.maestro.ListaAsistenciaFragment"
+        android:label="Asistencia">
+        <argument
+            android:name="sesionId"
+            app:argType="string" />
+    </fragment>
+
+    <!-- ── ALUMNO ── -->
+    <fragment
+        android:id="@+id/dashboardAlumnoFragment"
+        android:name="com.curso.asistenciaqr.fragments.alumno.DashboardAlumnoFragment"
+        android:label="Dashboard">
+        <action
+            android:id="@+id/action_dashboard_alumno_to_scanner"
+            app:destination="@id/scannerQrFragment" />
+        <action
+            android:id="@+id/action_dashboard_alumno_to_ajustes"
+            app:destination="@id/ajustesFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/scannerQrFragment"
+        android:name="com.curso.asistenciaqr.fragments.alumno.ScannerQrFragment"
+        android:label="Escanear QR" />
+
+    <fragment
+        android:id="@+id/confirmacionFragment"
+        android:name="com.curso.asistenciaqr.fragments.alumno.ConfirmacionFragment"
+        android:label="Confirmación">
+        <argument
+            android:name="exito"
+            app:argType="boolean" />
+        <argument
+            android:name="mensaje"
+            app:argType="string" />
+    </fragment>
+
+    <!-- ── Acciones globales (desde cualquier fragment) ── -->
+    <action
+        android:id="@+id/action_global_to_login"
+        app:destination="@id/loginFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_login_to_maestro"
+        app:destination="@id/dashboardMaestroFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
+    <action
+        android:id="@+id/action_login_to_alumno"
+        app:destination="@id/dashboardAlumnoFragment"
+        app:popUpTo="@id/nav_graph"
+        app:popUpToInclusive="true" />
+
 </navigation>
