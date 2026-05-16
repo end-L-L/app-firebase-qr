@@ -25,7 +25,9 @@
     <fragment
         android:id="@+id/registroFragment"
         android:name="com.curso.asistenciaqr.fragments.shared.RegistroFragment"
-        android:label="Crear Cuenta" />
+        android:label="Crear Cuenta"
+        tools:layout="@layout/fragment_registro"
+        />
 
     <fragment
         android:id="@+id/ajustesFragment"
@@ -63,7 +65,9 @@
         tools:layout="@layout/fragment_crear_sesion" >
         <action
             android:id="@+id/action_crear_sesion_to_qr"
-            app:destination="@id/qrDisplayFragment" />
+            app:destination="@id/qrDisplayFragment"
+            app:popUpTo="@id/dashboardMaestroFragment"
+            app:popUpToInclusive="false" />
     </fragment>
 
     <fragment
