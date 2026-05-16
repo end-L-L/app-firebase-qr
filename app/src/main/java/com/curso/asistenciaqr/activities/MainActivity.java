@@ -89,15 +89,13 @@ public class MainActivity extends AppCompatActivity {
         if ("maestro".equals(rol)) {
             navView.inflateMenu(R.menu.menu_drawer_maestro);
             appBarConfig = new AppBarConfiguration.Builder(
-                    R.id.dashboardMaestroFragment,
-                    R.id.ajustesFragment)
+                    R.id.dashboardMaestroFragment)
                     .setOpenableLayout(drawerLayout)
                     .build();
         } else {
             navView.inflateMenu(R.menu.menu_drawer_alumno);
             appBarConfig = new AppBarConfiguration.Builder(
-                    R.id.dashboardAlumnoFragment,
-                    R.id.ajustesFragment)
+                    R.id.dashboardAlumnoFragment)
                     .setOpenableLayout(drawerLayout)
                     .build();
         }

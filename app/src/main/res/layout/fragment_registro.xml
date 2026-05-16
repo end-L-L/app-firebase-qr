@@ -113,11 +113,14 @@
             android:textSize="12sp"
             android:layout_marginBottom="10dp" />
 
-        <LinearLayout
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/toggle_group_rol"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="28dp">
+            android:layout_marginBottom="28dp"
+            app:singleSelection="true"
+            app:selectionRequired="true"
+            app:checkedButton="@+id/btn_rol_maestro">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_rol_maestro"
@@ -125,8 +128,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Maestro"
-                app:strokeColor="?attr/colorPrimary" />
+                android:text="Maestro" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_rol_alumno"
@@ -134,12 +136,10 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Alumno"
-                app:strokeColor="?attr/colorOnSurfaceVariant" />
+                android:text="Alumno" />
 
-        </LinearLayout>
+        </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progress_bar"
             android:layout_width="wrap_content"
@@ -148,7 +148,6 @@
             android:visibility="gone"
             android:layout_marginBottom="12dp" />
 
-        <!-- Botones -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -166,11 +165,10 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_registrar"
+                style="@style/Widget.Material3.Button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Crear cuenta"
-                app:backgroundTint="?attr/colorPrimary"
-                android:textColor="?attr/colorOnPrimary" />
+                android:text="Crear cuenta" />
 
         </LinearLayout>
 

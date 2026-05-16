@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:gravity="center"
     android:padding="32dp"
-    android:background="@color/dark_bg">
+    android:background="?attr/colorSurface">
 
     <!-- Ícono -->
     <com.google.android.material.card.MaterialCardView
@@ -15,7 +15,7 @@
         android:layout_height="96dp"
         android:layout_marginBottom="24dp"
         app:cardCornerRadius="48dp"
-        app:cardBackgroundColor="#1A2235"
+        app:cardBackgroundColor="?attr/colorSurfaceVariant"
         app:cardElevation="12dp"
         app:strokeColor="#1E2D45"
         app:strokeWidth="1dp">
