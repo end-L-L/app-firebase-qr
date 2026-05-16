@@ -32,6 +32,25 @@ public class SesionRepository {
                 .addOnFailureListener(e -> listener.onError(e.getMessage()));
     }
 
+    // ─── Crear sesión con duración en segundos (modo demo) ────
+    public void crearSesionSegundos(String maestroId, String materia,
+                                    String grupo, int duracionSegundos,
+                                    OnSesionListener listener) {
+        String token  = UUID.randomUUID().toString();
+        long   ahora  = System.currentTimeMillis() / 1000;
+        long   expira = ahora + duracionSegundos;
+
+        Sesion sesion = new Sesion(maestroId, materia, grupo, token, expira);
+
+        db.collection(COLECCION)
+                .add(sesion)
+                .addOnSuccessListener(ref -> {
+                    sesion.setId(ref.getId());
+                    listener.onSuccess(sesion);
+                })
+                .addOnFailureListener(e -> listener.onError(e.getMessage()));
+    }
+
     // ─── Obtener sesión por ID ────────────────────────────────
     public void obtenerSesion(String sesionId, OnSesionListener listener) {
         db.collection(COLECCION).document(sesionId).get()
