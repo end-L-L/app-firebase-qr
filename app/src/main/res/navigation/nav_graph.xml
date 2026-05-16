@@ -42,6 +42,15 @@
         <action
             android:id="@+id/action_dashboard_maestro_to_crear_sesion"
             app:destination="@id/crearSesionFragment" />
+        <!-- ✅ Nueva acción directa al QR desde dashboard -->
+        <action
+            android:id="@+id/action_dashboard_maestro_to_qr"
+            app:destination="@id/qrDisplayFragment" />
+
+        <!-- ✅ Nueva acción directa a la lista desde dashboard -->
+        <action
+            android:id="@+id/action_dashboard_maestro_to_lista"
+            app:destination="@id/listaAsistenciaFragment" />
         <action
             android:id="@+id/action_dashboard_maestro_to_ajustes"
             app:destination="@id/ajustesFragment" />
