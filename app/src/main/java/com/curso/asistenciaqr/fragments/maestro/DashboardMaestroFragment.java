@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,9 +13,13 @@ import androidx.navigation.Navigation;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.curso.asistenciaqr.R;
 import com.curso.asistenciaqr.models.Sesion;
 import com.curso.asistenciaqr.repository.AuthRepository;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class DashboardMaestroFragment extends Fragment {
 
@@ -31,14 +36,16 @@ public class DashboardMaestroFragment extends Fragment {
         AuthRepository auth = new AuthRepository();
         requireActivity().setTitle("Dashboard");
 
-        TextView         tvSaludo        = view.findViewById(R.id.tv_saludo);
-        MaterialCardView cardSesionActiva = view.findViewById(R.id.card_sesion_activa);
-        TextView         tvNombreSesion  = view.findViewById(R.id.tv_nombre_sesion_activa);
-        TextView         tvTiempo        = view.findViewById(R.id.tv_tiempo_restante);
+        TextView         tvSaludo         = view.findViewById(R.id.tv_saludo);
+        MaterialCardView cardSesionActiva  = view.findViewById(R.id.card_sesion_activa);
+        TextView         tvNombreSesion   = view.findViewById(R.id.tv_nombre_sesion_activa);
+        TextView         tvTiempo         = view.findViewById(R.id.tv_tiempo_restante);
+        LinearLayout     containerHistorial = view.findViewById(R.id.container_historial);
+        TextView         tvSinSesiones    = view.findViewById(R.id.tv_sin_sesiones);
 
         String maestroId = auth.getUsuarioActual().getUid();
 
-        // Obtener nombre desde Firestore — igual que tu versión original
+        // Nombre del maestro
         FirebaseFirestore.getInstance()
                 .collection("usuarios")
                 .document(maestroId)
@@ -49,8 +56,9 @@ public class DashboardMaestroFragment extends Fragment {
                     if (nombre != null) tvSaludo.setText("Hola, " + nombre);
                 });
 
-        // Buscar sesión activa del maestro
         long ahora = System.currentTimeMillis() / 1000;
+
+        // ── Sesión activa vigente ──────────────────────────────
         FirebaseFirestore.getInstance()
                 .collection("sesiones")
                 .whereEqualTo("maestroId", maestroId)
@@ -65,21 +73,16 @@ public class DashboardMaestroFragment extends Fragment {
                         Sesion sesion = snapshots.getDocuments().get(0).toObject(Sesion.class);
                         sesion.setId(snapshots.getDocuments().get(0).getId());
 
-                        // Mostrar card de sesión activa
                         cardSesionActiva.setVisibility(View.VISIBLE);
                         tvNombreSesion.setText(sesion.getMateria() + " · " + sesion.getGrupo());
 
-                        // Tiempo restante
                         long seg = sesion.getExpira() - (System.currentTimeMillis() / 1000);
-                        if (seg > 0) {
-                            tvTiempo.setText(String.format("%02d:%02d", seg / 60, seg % 60));
-                        } else {
-                            tvTiempo.setText("00:00");
-                        }
+                        tvTiempo.setText(seg > 0 ?
+                                String.format("%02d:%02d", seg / 60, seg % 60) : "00:00");
 
-                        // Botón Ver QR
                         String sesionId = sesion.getId();
                         String token    = sesion.getToken();
+
                         view.findViewById(R.id.btn_ver_qr).setOnClickListener(v -> {
                             Bundle args = new Bundle();
                             args.putString("sesionId", sesionId);
@@ -88,7 +91,6 @@ public class DashboardMaestroFragment extends Fragment {
                                     .navigate(R.id.action_dashboard_maestro_to_qr, args);
                         });
 
-                        // Botón Ver Lista
                         view.findViewById(R.id.btn_ver_lista).setOnClickListener(v -> {
                             Bundle args = new Bundle();
                             args.putString("sesionId", sesionId);
@@ -98,7 +100,58 @@ public class DashboardMaestroFragment extends Fragment {
                     }
                 });
 
-        // Card Nueva Sesión — igual que tu versión original
+        // ── Historial: TODAS las sesiones del maestro ─────────
+        FirebaseFirestore.getInstance()
+                .collection("sesiones")
+                .whereEqualTo("maestroId", maestroId)
+                .orderBy("expira", Query.Direction.DESCENDING)
+                .get()
+                .addOnSuccessListener(snapshots -> {
+                    if (!isAdded()) return;
+
+                    if (snapshots.isEmpty()) {
+                        tvSinSesiones.setVisibility(View.VISIBLE);
+                        return;
+                    }
+
+                    for (QueryDocumentSnapshot doc : snapshots) {
+                        Sesion sesion = doc.toObject(Sesion.class);
+                        sesion.setId(doc.getId());
+
+                        // Inflar item del historial
+                        View item = LayoutInflater.from(getContext())
+                                .inflate(R.layout.item_sesion_historial, containerHistorial, false);
+
+                        TextView tvMateria  = item.findViewById(R.id.tv_materia_historial);
+                        TextView tvGrupoFecha = item.findViewById(R.id.tv_grupo_fecha);
+                        View     indicador  = item.findViewById(R.id.indicador_estado);
+
+                        tvMateria.setText(sesion.getMateria());
+
+                        // Fecha legible desde timestamp de expiración
+                        String fecha = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+                                .format(new Date(sesion.getExpira() * 1000));
+                        tvGrupoFecha.setText(sesion.getGrupo() + " · " + fecha);
+
+                        // Color del indicador según si expiró o no
+                        boolean expirada = sesion.getExpira() < ahora;
+                        indicador.setBackgroundResource(
+                                expirada ? R.drawable.circle_red : R.drawable.circle_green);
+
+                        // Botón lista
+                        String sesionId = sesion.getId();
+                        item.findViewById(R.id.btn_historial_lista).setOnClickListener(v -> {
+                            Bundle args = new Bundle();
+                            args.putString("sesionId", sesionId);
+                            Navigation.findNavController(requireView())
+                                    .navigate(R.id.action_dashboard_maestro_to_lista, args);
+                        });
+
+                        containerHistorial.addView(item);
+                    }
+                });
+
+        // Card Nueva Sesión
         view.findViewById(R.id.card_nueva_sesion).setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_dashboard_maestro_to_crear_sesion));

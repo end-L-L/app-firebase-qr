@@ -154,5 +154,32 @@
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HISTORIAL DE SESIONES"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.15"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:id="@+id/tv_sin_sesiones"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sin sesiones registradas aún"
+            android:textColor="?attr/colorOnSurfaceVariant"
+            android:textSize="13sp"
+            android:visibility="gone" />
+
+        <!-- Contenedor dinámico para las cards del historial -->
+        <LinearLayout
+            android:id="@+id/container_historial"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
     </LinearLayout>
 </ScrollView>
