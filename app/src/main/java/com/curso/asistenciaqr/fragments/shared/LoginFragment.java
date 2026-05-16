@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.curso.asistenciaqr.repository.PreferenciasRepository;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
@@ -155,6 +157,10 @@ public class LoginFragment extends Fragment {
     }
 
     private void redirigirPorRol(View view, String rol, String nombre) {
+
+        // ✅ Persistir rol para sobrevivir recreate()
+        new PreferenciasRepository(requireContext()).guardarRol(rol);
+
         if (getActivity() instanceof MainActivity) {
             ((MainActivity) getActivity()).configurarMenuPorRol(rol);
         }
