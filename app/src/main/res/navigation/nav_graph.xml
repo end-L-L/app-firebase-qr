@@ -135,6 +135,13 @@
         android:label="Acerca de"
         tools:layout="@layout/fragment_about" />
 
+    <fragment
+        android:id="@+id/perfilFragment"
+        android:name="com.curso.asistenciaqr.fragments.shared.PerfilFragment"
+        android:label="Mi perfil"
+        tools:layout="@layout/fragment_perfil"
+        />
+
     <!-- ── Acciones globales (desde cualquier fragment) ── -->
     <action
         android:id="@+id/action_global_to_login"

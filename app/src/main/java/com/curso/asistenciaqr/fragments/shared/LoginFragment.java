@@ -28,7 +28,6 @@ public class LoginFragment extends Fragment {
     private MaterialButton     btnLogin, btnRolMaestro, btnRolAlumno;
     private ProgressBar        progressBar;
     private AuthRepository     authRepository;
-    private String             rolSeleccionado = "alumno"; // default
 
     @Nullable @Override
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -73,11 +72,6 @@ public class LoginFragment extends Fragment {
         btnRolAlumno   = view.findViewById(R.id.btn_rol_alumno);
         progressBar    = view.findViewById(R.id.progress_bar);
 
-        // selector de rol
-        seleccionarRol("alumno", view);
-        btnRolMaestro.setOnClickListener(v -> seleccionarRol("maestro", view));
-        btnRolAlumno.setOnClickListener(v  -> seleccionarRol("alumno",  view));
-
         // Link → Registro
         view.findViewById(R.id.tv_crear_cuenta).setOnClickListener(v ->
                 Navigation.findNavController(v)
@@ -102,22 +96,6 @@ public class LoginFragment extends Fragment {
 
         btnLogin.setOnClickListener(v -> intentarLogin(view));
     }
-
-    private void seleccionarRol(String rol, View view) {
-        rolSeleccionado = rol;
-        // Resaltar botón seleccionado
-        int colorActivo   = requireContext().getColor(R.color.cyan);
-        int colorInactivo = 0x00000000; // transparente
-
-        if ("maestro".equals(rol)) {
-            btnRolMaestro.setBackgroundColor(colorActivo);
-            btnRolAlumno.setBackgroundColor(colorInactivo);
-        } else {
-            btnRolAlumno.setBackgroundColor(colorActivo);
-            btnRolMaestro.setBackgroundColor(colorInactivo);
-        }
-    }
-
     private void intentarLogin(View view) {
         tilEmail.setError(null);
         tilContrasena.setError(null);
