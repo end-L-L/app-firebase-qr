@@ -88,16 +88,6 @@
                         android:textColor="?attr/colorOnSurface" />
                 </com.google.android.material.textfield.TextInputLayout>
 
-                <!-- Selector de rol -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text=" "
-                    android:textColor="?attr/colorOnSurfaceVariant"
-                    android:textSize="12sp"
-                    android:letterSpacing="0.05"
-                    android:layout_marginBottom="10dp" />
-
                 <!-- Botón Login -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_login"

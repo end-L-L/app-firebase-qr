@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -45,7 +46,7 @@ public class DashboardMaestroFragment extends Fragment {
 
         String maestroId = auth.getUsuarioActual().getUid();
 
-        // Nombre del maestro
+        // Nombre del maestro (Consulta única - está bien con .get())
         FirebaseFirestore.getInstance()
                 .collection("usuarios")
                 .document(maestroId)
@@ -56,63 +57,72 @@ public class DashboardMaestroFragment extends Fragment {
                     if (nombre != null) tvSaludo.setText("Hola, " + nombre);
                 });
 
-        long ahora = System.currentTimeMillis() / 1000;
-
-        // ── Sesión activa vigente ──────────────────────────────
+        // ── 🔄 Sesión activa vigente (EN TIEMPO REAL) ──────────────────────────────
         FirebaseFirestore.getInstance()
                 .collection("sesiones")
                 .whereEqualTo("maestroId", maestroId)
                 .whereEqualTo("activa", true)
-                .whereGreaterThan("expira", ahora)
+                .whereGreaterThan("expira", System.currentTimeMillis() / 1000)
                 .orderBy("expira", Query.Direction.DESCENDING)
                 .limit(1)
-                .get()
-                .addOnSuccessListener(snapshots -> {
-                    if (!isAdded()) return;
-                    if (!snapshots.isEmpty()) {
+                .addSnapshotListener((snapshots, error) -> {
+                    if (error != null || !isAdded()) return;
+
+                    if (snapshots != null && !snapshots.isEmpty()) {
                         Sesion sesion = snapshots.getDocuments().get(0).toObject(Sesion.class);
-                        sesion.setId(snapshots.getDocuments().get(0).getId());
+                        if (sesion != null) {
+                            sesion.setId(snapshots.getDocuments().get(0).getId());
 
-                        cardSesionActiva.setVisibility(View.VISIBLE);
-                        tvNombreSesion.setText(sesion.getMateria() + " · " + sesion.getGrupo());
+                            cardSesionActiva.setVisibility(View.VISIBLE);
+                            tvNombreSesion.setText(sesion.getMateria() + " · " + sesion.getGrupo());
 
-                        long seg = sesion.getExpira() - (System.currentTimeMillis() / 1000);
-                        tvTiempo.setText(seg > 0 ?
-                                String.format("%02d:%02d", seg / 60, seg % 60) : "00:00");
+                            long seg = sesion.getExpira() - (System.currentTimeMillis() / 1000);
+                            tvTiempo.setText(seg > 0 ?
+                                    String.format("%02d:%02d", seg / 60, seg % 60) : "00:00");
 
-                        String sesionId = sesion.getId();
-                        String token    = sesion.getToken();
+                            String sesionId = sesion.getId();
+                            String token    = sesion.getToken();
 
-                        view.findViewById(R.id.btn_ver_qr).setOnClickListener(v -> {
-                            Bundle args = new Bundle();
-                            args.putString("sesionId", sesionId);
-                            args.putString("token", token);
-                            Navigation.findNavController(v)
-                                    .navigate(R.id.action_dashboard_maestro_to_qr, args);
-                        });
+                            view.findViewById(R.id.btn_ver_qr).setOnClickListener(v -> {
+                                Bundle args = new Bundle();
+                                args.putString("sesionId", sesionId);
+                                args.putString("token", token);
+                                Navigation.findNavController(v)
+                                        .navigate(R.id.action_dashboard_maestro_to_qr, args);
+                            });
 
-                        view.findViewById(R.id.btn_ver_lista).setOnClickListener(v -> {
-                            Bundle args = new Bundle();
-                            args.putString("sesionId", sesionId);
-                            Navigation.findNavController(v)
-                                    .navigate(R.id.action_dashboard_maestro_to_lista, args);
-                        });
+                            view.findViewById(R.id.btn_ver_lista).setOnClickListener(v -> {
+                                Bundle args = new Bundle();
+                                args.putString("sesionId", sesionId);
+                                Navigation.findNavController(v)
+                                        .navigate(R.id.action_dashboard_maestro_to_lista, args);
+                            });
+                        }
+                    } else {
+                        // ✅ SI SE ELIMINA O EXPIRA, OCULTAMOS LA CARD AUTOMÁTICAMENTE
+                        cardSesionActiva.setVisibility(View.GONE);
                     }
                 });
 
-        // ── Historial: TODAS las sesiones del maestro ─────────
+        // ── 🔄 Historial: TODAS las sesiones (EN TIEMPO REAL) ─────────
         FirebaseFirestore.getInstance()
                 .collection("sesiones")
                 .whereEqualTo("maestroId", maestroId)
                 .orderBy("expira", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(snapshots -> {
-                    if (!isAdded()) return;
+                .addSnapshotListener((snapshots, error) -> {
+                    if (error != null || !isAdded()) return;
 
-                    if (snapshots.isEmpty()) {
+                    // ⚠️ CRUCIAL: Limpiar el contenedor antes de re-dibujar,
+                    // de lo contrario las sesiones se duplicarán cada vez que cambie algo.
+                    containerHistorial.removeAllViews();
+
+                    if (snapshots == null || snapshots.isEmpty()) {
                         tvSinSesiones.setVisibility(View.VISIBLE);
                         return;
                     }
+
+                    tvSinSesiones.setVisibility(View.GONE);
+                    long ahora = System.currentTimeMillis() / 1000;
 
                     for (QueryDocumentSnapshot doc : snapshots) {
                         Sesion sesion = doc.toObject(Sesion.class);
@@ -147,6 +157,20 @@ public class DashboardMaestroFragment extends Fragment {
                                     .navigate(R.id.action_dashboard_maestro_to_lista, args);
                         });
 
+                        // Long click para eliminar
+                        item.setOnLongClickListener(v -> {
+                            new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                    .setTitle("Eliminar sesión")
+                                    .setMessage("¿Eliminar la sesión de " + sesion.getMateria()
+                                            + " · " + sesion.getGrupo() + "?\n\n"
+                                            + "También se eliminarán todos los registros de asistencia asociados.")
+                                    .setPositiveButton("Eliminar", (d, w) ->
+                                            eliminarSesion(sesion.getId(), sesion.getMateria()))
+                                    .setNegativeButton("Cancelar", null)
+                                    .show();
+                            return true;
+                        });
+
                         containerHistorial.addView(item);
                     }
                 });
@@ -155,5 +179,46 @@ public class DashboardMaestroFragment extends Fragment {
         view.findViewById(R.id.card_nueva_sesion).setOnClickListener(v ->
                 Navigation.findNavController(v)
                         .navigate(R.id.action_dashboard_maestro_to_crear_sesion));
+    }
+
+    private void eliminarSesion(String sesionId, String materia) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 1. Buscar y eliminar todos los documentos de asistencia de esa sesión
+        db.collection("asistencias")
+                .whereEqualTo("sesionId", sesionId)
+                .get()
+                .addOnSuccessListener(snapshots -> {
+                    // Eliminar en batch para mayor eficiencia
+                    com.google.firebase.firestore.WriteBatch batch = db.batch();
+
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : snapshots) {
+                        batch.delete(doc.getReference());
+                    }
+
+                    // 2. Eliminar también el documento de la sesión
+                    batch.delete(db.collection("sesiones").document(sesionId));
+
+                    // 3. Ejecutar el batch
+                    batch.commit()
+                            .addOnSuccessListener(v -> {
+                                if (!isAdded() || getView() == null) return;
+                                Snackbar.make(requireView(),
+                                        "Sesión \"" + materia + "\" eliminada",
+                                        Snackbar.LENGTH_SHORT).show();
+                                // El onSnapshot ya actualiza la lista automáticamente
+                            })
+                            .addOnFailureListener(e -> {
+                                if (!isAdded() || getView() == null) return;
+                                Snackbar.make(requireView(),
+                                        "Error al eliminar: " + e.getMessage(),
+                                        Snackbar.LENGTH_LONG).show();
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    if (!isAdded() || getView() == null) return;
+                    Snackbar.make(requireView(),
+                            "Error: " + e.getMessage(), Snackbar.LENGTH_LONG).show();
+                });
     }
 }
